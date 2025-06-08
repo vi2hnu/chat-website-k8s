@@ -4,14 +4,15 @@ import User from "../models/user.js";
 const protectRoute = async (req,res,next)=>{
     try{
         const token = req.cookies.jwt;
+        
         if(!token){
-            return res.send(401).json({error:"not logged in"});
+            return res.send(401);
         }
 
         const decode = jwt.verify(token,process.env.JWT_SECRECT);
 
         if(!decode){
-            return res.send(401).json({error:"not logged in"});
+            return res.send(401);
         }
 
         const user = await User.findOne({ _id: decode.userId}).select("-password");
