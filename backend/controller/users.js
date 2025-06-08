@@ -33,7 +33,7 @@ export const getallUsers = async (req,res) =>{
 
         const filtered = await User.find({_id:{$ne:user}}).select("-password");
 
-        res.status(200).json(   filtered);
+        res.status(200).json(filtered);
     }
     catch (error){
         console.log(error);
