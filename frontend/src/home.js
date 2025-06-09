@@ -1,42 +1,56 @@
-import { useEffect, useState } from "react";
+import './home.css';
+import { useEffect, useState, useRef } from 'react';
+import userIcon from './assets/user.png';
 
 export default function Home() {
-    const [user, setUser] = useState(null);
-    const [error, setError] = useState("");
+    const [users, setUsers] = useState([]);
+    const userIdsRef = useRef(new Set());
 
     useEffect(() => {
-        fetch("http://localhost:8000/", {
-            method: "GET",
-            credentials: "include" // ✅ Send cookies
-        })
-        .then(async (res) => {
-            
-            if (!res.ok) {
-                const err = await res.json();
-                throw new Error(err.error || "Unauthorized");
+        const fetchUsers = async () => {
+            try {
+                const res = await fetch('http://localhost:8000/api/users', {
+                    credentials: 'include'
+                });
+
+                if (!res.ok) {
+                    throw new Error('Failed to fetch users');
+                }
+
+                const data = await res.json();
+                setUsers(data);
+
+                userIdsRef.current = new Set(data.map(user => user._id));
+            } catch (err) {
+                console.error('Error fetching users:', err);
             }
-            return res.json();
-        })
-        .then((data) => {
-            setUser(data);
-        })
-        .catch((err) => {
-            setError(err.message);
-        });
+        };
+
+        fetchUsers();
     }, []);
-
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
-
-    if (!user) {
-        return <div>Loading...</div>;
-    }
 
     return (
         <div>
-            <h2>Welcome, {user.username}</h2>
-            <pre>{JSON.stringify(user, null, 2)}</pre>
+            <div className="container">
+                <div className="side-container">
+                    <h3>Chats</h3>
+                    <div className="search-box">
+                        <input type="text" placeholder="Search" className="search-input" />
+                    </div>
+                    <hr className='hr'></hr>
+                    <div className="chats">
+                        {users.map(user => (
+                            <div key={user._id} className="chat-user">
+                                <img src={userIcon} alt="user" className="user-icon" />
+                                {user.username}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className="main-container">
+                    
+                </div>
+            </div>
         </div>
     );
 }

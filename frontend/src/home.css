@@ -1,0 +1,110 @@
+
+/*
+
+#2C3639 - black
+#3F4E4F - light green
+#A27B5C - brown
+#DCD7C9 - bage
+
+*/
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #25292b;
+    font-family: 'Inter', sans-serif;
+}
+
+.container {
+    width: 97%;
+    height: 95%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #3F4E4F;
+    border-radius: 10px;
+    z-index: 10;
+    display: flex;
+}
+
+.side-container {
+    width: 30%;
+    height: 100%;
+    background-color: #DCD7C9;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.search-box {
+    width: 90%;
+    display: flex;
+    align-items: center;
+    background-color: #A27B5C;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+}
+
+.search-input {
+    flex: 1;
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    outline: none;
+    font-size: 1rem;
+    width: 90%;
+}
+
+.search-input::placeholder {
+    color: #25292b;
+}
+
+.chats {
+    margin-top: 1rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow-y: auto;
+    background-color: #A27B5C;
+    border-radius: 8px;
+    padding: 0.5rem;
+}
+
+
+.chat-user {
+    padding: 0.75rem 1rem;
+    background-color: #2C3639;
+    height: 5%;
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.chat-user:hover {
+    background-color: #3F4E4F;
+}
+
+.hr {
+    border: none;
+    height: 3px;
+    background-color: #000000; 
+    margin: 0.5rem 0;
+    width: 100%;
+    border-radius: 10px;
+}
+
+.user-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.5rem;
+    border-radius: 50%;
+}
