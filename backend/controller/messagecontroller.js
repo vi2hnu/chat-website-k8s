@@ -5,7 +5,7 @@ import Message from "../models/message.js";
 export const sendmessage = async (req,res)=>{
     try{
         const {message} = req.body;
-        const {receiverid} = req.body;
+        const {id : receiverid} = req.params;
         const senderid = req.user._id;
 
         let conversation = await Conversation.findOne({
@@ -39,7 +39,7 @@ export const sendmessage = async (req,res)=>{
 
 export const getmessage = async (req, res) => {
     try {
-        const {receiverid } = req.body;
+        const {id : receiverid} = req.params;
         const { _id: senderid } = req.user;
 
         let conversation = await Conversation.findOne({
