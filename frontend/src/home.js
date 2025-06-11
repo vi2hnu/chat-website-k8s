@@ -2,6 +2,7 @@ import './home.css';
 import { useEffect, useState, useRef } from 'react';
 import userIcon from './assets/user.png';
 import profilePic from './assets/profile-pic.png';
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
     const [users, setUsers] = useState([]);
@@ -11,26 +12,42 @@ export default function Home() {
     const userIdsRef = useRef(new Set());
     const [searchText, setSearchText] = useState('');
     const [foundUser, setFoundUser] = useState(null);
-    const [currentUserId, setCurrentUserId] = useState(null);
     const [popup, setPopup] = useState({ visible: false, message: '' });
     const messageBoxRef = useRef(null);
 
+   const navigate = useNavigate();
+
     useEffect(() => {
-        const fetchCurrentUser = async () => {
-            try {
-                const res = await fetch('http://localhost:8000/api/auth/me', {
-                    credentials: 'include'
-                });
-                if (!res.ok) throw new Error('Failed to fetch current user');
-                const data = await res.json();
-                setCurrentUserId(data._id);
-            } catch (err) {
-                console.error('Error fetching current user:', err);
+        fetch("http://localhost:8000/api/auth/check", {
+        credentials: "include",
+        })
+        .then((res) => {
+            if (res.status !== 200) {
+            navigate("/login");
             }
-        };
+        })
+        .catch(() => {
+            navigate("/login");
+        });
+    }, [navigate]);
 
-        fetchCurrentUser();
+    const handleLogout = async () => {
+        try {
+            const response = await fetch('http://localhost:8000/api/auth/logout', {
+                method: 'POST',
+                credentials: 'include',
+            });
 
+            if (response.ok) {
+                navigate('/login');
+            }
+
+        } catch (error) {
+            console.error('Error during logout:', error);
+        }
+    };
+
+    useEffect(() => {
         const fetchUsers = async () => {
             try {
                 const res = await fetch('http://localhost:8000/api/users', {
@@ -153,7 +170,10 @@ export default function Home() {
         <div>
             <div className="container">
                 <div className="side-container">
-                    <h3>Chats</h3>
+                   <div className='top-container'>
+                         <h3 className='chatname'>Chats</h3>
+                    <button className='logout-button' onClick={handleLogout}>Logout</button>
+                   </div>
                     <div className="search-box">
                         <form onSubmit={search} className='search-form'>
                             <input
