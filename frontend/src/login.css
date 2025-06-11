@@ -1,0 +1,98 @@
+/*
+
+#2C3639 - black
+#3F4E4F - light green
+#A27B5C - brown
+#DCD7C9 - bage
+
+*/
+
+/* Auth Page Colors */
+:root {
+    --auth-bg-dark: #2C3639;
+    --auth-bg-light: #3F4E4F;
+    --auth-accent: #A27B5C;
+    --auth-bg-base: #DCD7C9;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.auth-container {
+    width: 50%;
+    background-color: var(--auth-bg-base);
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+    margin-top: 10%;
+}
+
+.auth-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.auth-form > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-input {
+    padding: 10px;
+    font-size: 16px;
+    margin-top: 5px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    width: 80%;
+    margin: auto;
+}
+
+.auth-title {
+    text-decoration: underline;
+    margin-bottom: 20px;
+}
+
+.auth-submit-btn {
+    background-color: var(--auth-accent);
+    width: 50%;
+    margin: 10px auto 0 auto;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 10px;
+    border: none;
+}
+
+.auth-submit-btn:hover {
+    background-color: rgb(153, 111, 78);
+}
+
+.auth-toggle-btn {
+    background-color: var(--auth-bg-dark);
+    width: 50%;
+    margin: 10px auto;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 10px;
+    border: none;
+}
+
+.auth-toggle-btn:hover {
+    background-color: var(--auth-bg-light);
+}
+
+.lable{
+    margin-left: 10%;
+}
