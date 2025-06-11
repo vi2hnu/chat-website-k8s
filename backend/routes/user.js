@@ -5,6 +5,6 @@ import {getUser,getallUsers} from "../controller/users.js";
 const router = express.Router();
 
 router.get("/",protectRoute,getallUsers);
-router.get("/search",protectRoute,getUser);
+router.get("/search/:username",protectRoute,getUser);
 
 export default router;

@@ -43,7 +43,7 @@ export const getallUsers = async (req, res) => {
 //find single user
 export const getUser = async (req,res) =>{
     try{
-        const {username} = req.body;
+        const {username} = req.params;
 
         const exists = await User.findOne({username}).select("-password");
         if(!exists){
