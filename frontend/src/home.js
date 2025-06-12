@@ -15,6 +15,7 @@ export default function Home() {
     const [searchText, setSearchText] = useState('');
     const [foundUser, setFoundUser] = useState(null);
     const [popup, setPopup] = useState({ visible: false, message: '' });
+    const [onlineUsers, setOnlineUsers] = useState(new Set());
     const messageBoxRef = useRef(null);
     const socketRef = useRef(null);
     const navigate = useNavigate();
@@ -54,7 +55,7 @@ export default function Home() {
         };
     }, [selectedUser, userId]);
 
-
+    
     useEffect(() => {
         if (!userId || socketRef.current) return;
 
@@ -64,6 +65,10 @@ export default function Home() {
 
         socketRef.current.on("connect", () => {
             console.log(`Connected to socket: ${socketRef.current.id}`);
+        });
+
+         socketRef.current.on("online users", (onlineUserIds) => {
+            setOnlineUsers(new Set(onlineUserIds));
         });
 
         return () => {
@@ -236,7 +241,9 @@ export default function Home() {
                     <hr className='hr' />
                     <div className="chats">
                         {users.map(user => (
-                            <div key={user._id} className="chat-user" onClick={() => change(user)}>
+                            <div key={user._id}
+                                className={`chat-user ${onlineUsers.has(user._id) ? 'online' : ''}`}
+                                onClick={() => change(user)}>
                                 <img src={userIcon} alt="user" className="user-icon" />
                                 {user.username}
                             </div>

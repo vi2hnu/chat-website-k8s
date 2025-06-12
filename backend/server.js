@@ -21,7 +21,7 @@ export const io = new Server(server);
 //middleware
 app.use(express.json()); 
 app.use(cookieParser());
-app.use(cors({ origin: ["http://localhost:3000","http://192.168.29.117:3000"], credentials: true }));
+app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));
 
 app.use("/api/auth",auth);
 app.use("/api/messages",message);
@@ -34,11 +34,11 @@ io.on('connection', (socket) => {
     const userId = socket.handshake.query.userId;
     if (userId) userSocketMap[userId] = socket.id;
 
-    io.emit("online users ", Object.keys(userSocketMap));
+    io.emit("online users", Object.keys(userSocketMap));
 
     socket.on("disconnect", () => {
         delete userSocketMap[userId];
-        io.emit("getOnlineUsers", Object.keys(userSocketMap));
+        io.emit("online users", Object.keys(userSocketMap));
     });
 })
 

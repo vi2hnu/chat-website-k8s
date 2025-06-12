@@ -372,3 +372,16 @@ html, body {
     background-color: rgb(154, 74, 74);
     color: white;
 }
+
+.chat-user {
+    padding: 5px;
+    margin-bottom: 5px;
+    height: 7%;
+    border: 1px solid #A27B5C;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.chat-user.online {
+    border: 2px solid rgb(164, 250, 164);
+}
