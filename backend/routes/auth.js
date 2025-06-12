@@ -9,7 +9,7 @@ router.post("/signup",signup)
 router.post("/logout",logout)
 router.get('/check',protectRoute,(req,res)=>{
     res.status(200).json({
-        user:"logged in"
+        user: req.user._id
     })
 })
 

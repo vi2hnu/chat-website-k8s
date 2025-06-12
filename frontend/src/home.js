@@ -3,8 +3,10 @@ import { useEffect, useState, useRef } from 'react';
 import userIcon from './assets/user.png';
 import profilePic from './assets/profile-pic.png';
 import { useNavigate } from "react-router-dom";
+import io from "socket.io-client";
 
 export default function Home() {
+    const [userId, setUserId] = useState("");
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [messages, setMessages] = useState([]);
@@ -14,22 +16,63 @@ export default function Home() {
     const [foundUser, setFoundUser] = useState(null);
     const [popup, setPopup] = useState({ visible: false, message: '' });
     const messageBoxRef = useRef(null);
-
-   const navigate = useNavigate();
+    const socketRef = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch("http://localhost:8000/api/auth/check", {
-        credentials: "include",
+            credentials: "include",
         })
-        .then((res) => {
-            if (res.status !== 200) {
-            navigate("/login");
-            }
-        })
-        .catch(() => {
-            navigate("/login");
-        });
+            .then((res) => {
+                if (res.status !== 200) {
+                    navigate("/login");
+                    return;
+                }
+                return res.json();
+            })
+            .then((data) => {
+                if (data && data.user) {
+                    setUserId(data.user);
+                }
+            })
+            .catch(() => {
+                navigate("/login");
+            });
     }, [navigate]);
+
+    useEffect(() => {
+        if (!socketRef.current || !userId) return;
+
+        socketRef.current.on("New message", (newMessage) => {
+            if (selectedUser && newMessage.senderid === selectedUser._id) {
+                setMessages(prevMessages => [...prevMessages, newMessage]);
+            }
+        });
+
+        return () => {
+            socketRef.current.off("New message");
+        };
+    }, [selectedUser, userId]);
+
+
+    useEffect(() => {
+        if (!userId || socketRef.current) return;
+
+        socketRef.current = io("http://localhost:8000", {
+            query: { userId }
+        });
+
+        socketRef.current.on("connect", () => {
+            console.log(`Connected to socket: ${socketRef.current.id}`);
+        });
+
+        return () => {
+            if (socketRef.current) {
+                socketRef.current.disconnect();
+                socketRef.current = null;
+            }
+        };
+    }, [userId]);
 
     const handleLogout = async () => {
         try {
@@ -37,11 +80,9 @@ export default function Home() {
                 method: 'POST',
                 credentials: 'include',
             });
-
             if (response.ok) {
                 navigate('/login');
             }
-
         } catch (error) {
             console.error('Error during logout:', error);
         }
@@ -64,11 +105,13 @@ export default function Home() {
 
         fetchUsers();
     }, []);
+
     useEffect(() => {
         if (messageBoxRef.current) {
             messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
         }
     }, [messages]);
+
     const fetchMessages = async (user) => {
         try {
             const res = await fetch(`http://localhost:8000/api/messages/${user._id}`, {
@@ -102,12 +145,21 @@ export default function Home() {
                 body: JSON.stringify({ message: messageText.trim() }),
             });
 
-            if (!res.ok) {
-                throw new Error('Failed to send message');
-            }
+            if (!res.ok) throw new Error('Failed to send message');
+            const appendedMessage = {
+                _id: Date.now().toString(),
+                senderid: userId,
+                message: messageText.trim()
+            };
 
+            setMessages(prevMessages => [...prevMessages, appendedMessage]);
             setMessageText('');
-            await fetchMessages(selectedUser);
+
+            setTimeout(() => {
+                if (messageBoxRef.current) {
+                    messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight;
+                }
+            }, 0);
         } catch (err) {
             console.error('Error sending message:', err);
         }
@@ -151,16 +203,12 @@ export default function Home() {
                 body: JSON.stringify({ message: "Hi!" }),
             });
 
-            if (!res.ok) {
-                throw new Error('Failed to send message');
-            }
-
-            closePopup()
+            if (!res.ok) throw new Error('Failed to send message');
+            closePopup();
         } catch (err) {
             console.error('Error sending Hi:', err);
         }
     };
-
 
     const closePopup = () => {
         setPopup({ visible: false, message: '' });
@@ -170,10 +218,10 @@ export default function Home() {
         <div>
             <div className="container">
                 <div className="side-container">
-                   <div className='top-container'>
-                         <h3 className='chatname'>Chats</h3>
-                    <button className='logout-button' onClick={handleLogout}>Logout</button>
-                   </div>
+                    <div className='top-container'>
+                        <h3 className='chatname'>Chats</h3>
+                        <button className='logout-button' onClick={handleLogout}>Logout</button>
+                    </div>
                     <div className="search-box">
                         <form onSubmit={search} className='search-form'>
                             <input
@@ -244,14 +292,16 @@ export default function Home() {
             {popup.visible && (
                 <div className="search-popup">
                     <h3>{popup.message}</h3>
-
                     {foundUser && (
                         <div className='display-user'>
-                            <div className='pop-up-username'><h3 style={{ marginRight: '10px' }} >{foundUser.username}</h3></div>
-                            <button onClick={sendHi} className='pop-up-button'><h3 style={{ color: 'white' }}>Send Hi!</h3></button>
+                            <div className='pop-up-username'>
+                                <h3 style={{ marginRight: '10px' }}>{foundUser.username}</h3>
+                            </div>
+                            <button onClick={sendHi} className='pop-up-button'>
+                                <h3 style={{ color: 'white' }}>Send Hi!</h3>
+                            </button>
                         </div>
                     )}
-
                     <button className="popup-close" onClick={closePopup}>X</button>
                 </div>
             )}
