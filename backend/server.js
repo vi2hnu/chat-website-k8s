@@ -9,8 +9,6 @@ import cors from "cors";
 import { Server } from 'socket.io';
 import { createServer } from 'node:http';
 
-//config
-dotenv.config();
 
 const PORT = process.env.PORT
 const app = express()
