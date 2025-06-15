@@ -16,8 +16,8 @@ export default function AuthPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const endpoint = isSignup
-            ? "http://localhost:8000/api/auth/signup"
-            : "http://localhost:8000/api/auth/login";
+            ? "http://chat-app.com/api/auth/signup"
+            : "http://chat-app.com/api/auth/login";
 
         try {
             const response = await fetch(endpoint, {
@@ -32,7 +32,7 @@ export default function AuthPage() {
             const data = await response.json();
 
             if (response.ok) {
-                window.location.href = "http://localhost:3000";
+                window.location.href = "http://chat-app.com";
             } else {
                 alert(data.error);
             }

@@ -21,7 +21,7 @@ export default function Home() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch("http://localhost:8000/api/auth/check", {
+        fetch("http://chat-app.com/api/auth/check", {
             credentials: "include",
         })
             .then((res) => {
@@ -59,7 +59,7 @@ export default function Home() {
     useEffect(() => {
         if (!userId || socketRef.current) return;
 
-        socketRef.current = io("http://localhost:8000", {
+        socketRef.current = io("http://chat-app.com", {
             query: { userId }
         });
 
@@ -81,7 +81,7 @@ export default function Home() {
 
     const handleLogout = async () => {
         try {
-            const response = await fetch('http://localhost:8000/api/auth/logout', {
+            const response = await fetch('http://chat-app.com/api/auth/logout', {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -96,7 +96,7 @@ export default function Home() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const res = await fetch('http://localhost:8000/api/users', {
+                const res = await fetch('http://chat-app.com/api/users', {
                     credentials: 'include'
                 });
                 if (!res.ok) throw new Error('Failed to fetch users');
@@ -119,7 +119,7 @@ export default function Home() {
 
     const fetchMessages = async (user) => {
         try {
-            const res = await fetch(`http://localhost:8000/api/messages/${user._id}`, {
+            const res = await fetch(`http://chat-app.com/api/messages/${user._id}`, {
                 credentials: 'include'
             });
             if (!res.ok) throw new Error('Failed to fetch messages');
@@ -143,7 +143,7 @@ export default function Home() {
         if (!messageText.trim() || !selectedUser) return;
 
         try {
-            const res = await fetch(`http://localhost:8000/api/messages/send/${selectedUser._id}`, {
+            const res = await fetch(`http://chat-app.com/api/messages/send/${selectedUser._id}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -174,7 +174,7 @@ export default function Home() {
         e.preventDefault();
         try {
             const query = searchText.trim();
-            const res = await fetch(`http://localhost:8000/api/users/search/${query}`, {
+            const res = await fetch(`http://chat-app.com/api/users/search/${query}`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include'
@@ -201,7 +201,7 @@ export default function Home() {
         if (!foundUser) return;
 
         try {
-            const res = await fetch(`http://localhost:8000/api/messages/send/${foundUser._id}`, {
+            const res = await fetch(`http://chat-app.com/api/messages/send/${foundUser._id}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
