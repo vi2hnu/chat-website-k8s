@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.apps.backend.name }}
+spec:
+  replicas: {{ .Values.apps.backend.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.apps.backend.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.apps.backend.name }}
+    spec:
+      containers:
+        - name: backend
+          image: {{ .Values.apps.backend.repository }}:{{ .Values.apps.backend.tag }}
+          imagePullPolicy: {{ .Values.apps.pullPolicy}}
+          ports:
+            - containerPort: {{ .Values.service.backend.internalPort }}
+          envFrom:
+            - secretRef:
+                name: backend-secrets

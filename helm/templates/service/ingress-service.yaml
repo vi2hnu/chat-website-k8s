@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.service.ingress.name }}
+  annotations:
+    nginx.ingress.kubernetes.io/enable-websocket: "true"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+spec:
+  ingressClassName: {{ .Values.service.ingress.ingressClassName }}
+  rules:
+    - host: chat-app.com
+      http:
+        paths:
+          - path: /socket.io
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ .Values.service.backend.name }}
+                port:
+                  number: {{ .Values.service.backend.externalPort }}
+          - path: /api/
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.service.backend.name }}
+                port:
+                  number: {{ .Values.service.backend.externalPort }}
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.service.frontend.name }}
+                port:
+                  number: {{ .Values.service.frontend.externalPort }}

@@ -1,0 +1,17 @@
+apiVersion: v1
+name: chat-app
+version: 1.0.0
+description: helm chart for  https://github.com/vi2hnu/chat-website
+
+keywords:
+  - nodejs
+  - reactjs
+  - express
+  - chart
+
+home: https://github.com/vi2hnu/chat-website
+
+sources:
+  - https://github.com/vi2hnu/chat-website
+
+appVersion: 1.0.0

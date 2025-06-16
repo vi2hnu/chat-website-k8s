@@ -1,0 +1,27 @@
+apps:
+  backend:
+    name: backend
+    repository: ghcr.io/vi2hnu/chat-website-backend
+    tag: "latest"
+    replicaCount: 2
+  frontend:
+    name: frontend
+    repository: ghcr.io/vi2hnu/chat-website-frontend
+    tag: "latest"
+    replicaCount: 1
+  pullPolicy: IfNotPresent
+
+
+service:
+  frontend:
+    name: frontend
+    externalPort: 3000
+    internalPort: 3000
+  backend:
+    name: backend
+    externalPort: 8000
+    internalPort: 8000
+  ingress:
+    name: chat-ingress
+    ingressClassName: nginx
+
