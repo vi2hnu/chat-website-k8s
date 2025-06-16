@@ -13,7 +13,14 @@ import { createServer } from 'node:http';
 const PORT = process.env.PORT
 const app = express()
 const server = createServer(app);
-export const io = new Server(server);
+export const io = new Server(server, {
+  path: "/socket.io",
+  cors: {
+    origin: "https://chat-app.com",
+    credentials: true,
+  },
+});
+
 
 
 //middleware

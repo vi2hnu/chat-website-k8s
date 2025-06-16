@@ -60,8 +60,12 @@ export default function Home() {
         if (!userId || socketRef.current) return;
 
         socketRef.current = io("http://chat-app.com", {
-            query: { userId }
+            path: "/socket.io",
+            transports: ["websocket"],
+            query: { userId },
+            withCredentials: true,
         });
+
 
         socketRef.current.on("connect", () => {
             console.log(`Connected to socket: ${socketRef.current.id}`);
