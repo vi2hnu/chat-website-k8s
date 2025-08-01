@@ -25,9 +25,9 @@ export const sendmessage = async (req,res)=>{
         })
 
         //socket io
-        const receiverSocketId = getReceiverSocketId(receiverid);
+        const receiverSocketId = await getReceiverSocketId(receiverid);
         if (receiverSocketId) {
-        io.to(receiverSocketId).emit("New message", newMessage);
+            io.to(receiverSocketId).emit("New message", newMessage);
         }
 
         conversation.messages.push(newMessage._id);
