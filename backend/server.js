@@ -16,7 +16,7 @@ const app = express()
 const server = createServer(app);
 
 //redis
-const redisUrl = "redis://localhost:6379";
+const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
 const pubClient = createClient({ url: redisUrl });
 const subClient = pubClient.duplicate();
 const redisClient = createClient({ url: redisUrl });
@@ -30,7 +30,7 @@ await Promise.all([
 export const io = new Server(server, {
   path: "/socket.io",
   cors: {
-    origin: "https://chat-app.com",
+    origin: "http://chat-app.com",
     credentials: true,
   },
 });
@@ -51,11 +51,13 @@ io.on("connection", (socket) => {
   const userId = socket.handshake.query.userId;
   if (userId) {
     redisClient.set(`user:${userId}`, socket.id);
+    console.log(`Set Redis key: user:${userId} -> ${socket.id}`);
   }
 
   redisClient.keys("user:*").then((keys) => {
     const userIds = keys.map((key) => key.split(":")[1]);
     io.emit("online users", userIds);
+    console.log('emiting'+userIds);
   });
 
   socket.on("disconnect", async () => {

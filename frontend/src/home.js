@@ -59,12 +59,12 @@ export default function Home() {
     useEffect(() => {
         if (!userId || socketRef.current) return;
 
-        socketRef.current = io("http://chat-app.com", {
-            path: "/socket.io",
+        socketRef.current = io("/socket.io", {
             transports: ["websocket"],
             query: { userId },
             withCredentials: true,
         });
+
 
 
         socketRef.current.on("connect", () => {
